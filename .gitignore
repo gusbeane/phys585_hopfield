@@ -1,0 +1,4 @@
+samples/train-images-idx3-ubyte
+samples/train-labels-idx1-ubyte
+samples/t10k-images-idx3-ubyte
+samples/t10k-labels-idx1-ubyte
