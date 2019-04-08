@@ -94,3 +94,36 @@ def massage_images(images):
                 images[i][j] = -1
     return images
 
+if __name__ == '__main__':
+    mndata = MNIST('samples')
+
+    images, labels = mndata.load_training()
+    images = np.asarray(images)
+    labels = np.asarray(labels)
+    
+    train_keys, train_images, train_labels = choose_training(images, labels)
+    test_keys, test_images, test_labels = choose_test(images, labels)
+
+    train_images = massage_images(train_images)
+    test_images = massage_images(test_images)
+
+    for i in range(len(test_keys)):
+        test_img = np.reshape(test_images[i], (28,28))
+
+        plt.imshow(test_img)
+        plt.savefig('images/input_test_'+str(i)+'.png')
+        plt.close()
+
+    h = hopfield(train_images, test_images, theta=0.5, nprocess=5000)
+
+    for i in range(len(test_keys)):
+        test_img = np.reshape(test_images[i], (28,28))
+        proc_img = np.reshape(h.processed_data[i], (28,28))
+
+        plt.imshow(test_img)
+        plt.savefig('images/test_'+str(i)+'.png')
+        plt.close()
+
+        plt.imshow(proc_img)
+        plt.savefig('images/proc_'+str(i)+'.png')
+        plt.close()
