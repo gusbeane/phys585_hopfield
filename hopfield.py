@@ -82,3 +82,15 @@ def choose_test(images, labels):
 
     return k, i, l
 
+def massage_images(images):
+    images = np.asarray(images)
+    images = np.divide(images, 255)
+    # slow, but I cant get a slicker solution to work for some reason
+    for i in range(np.shape(images)[0]):
+        for j in range(np.shape(images)[1]):
+            if images[i][j] > 0.5:
+                images[i][j] = 1
+            else:
+                images[i][j] = -1
+    return images
+
