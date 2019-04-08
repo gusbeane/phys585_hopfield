@@ -114,6 +114,13 @@ if __name__ == '__main__':
         plt.savefig('images/input_test_'+str(i)+'.png')
         plt.close()
 
+    for i in range(len(train_keys)):
+        train_img = np.reshape(train_images[i], (28,28))
+
+        plt.imshow(train_img)
+        plt.savefig('images/train_'+str(i)+'.png')
+        plt.close()
+
     h = hopfield(train_images, test_images, theta=0.5, nprocess=5000)
 
     for i in range(len(test_keys)):
