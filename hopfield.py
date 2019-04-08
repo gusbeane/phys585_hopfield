@@ -68,3 +68,17 @@ class hopfield(object):
             if len(np.shape(data)) == 1:
                 data = np.reshape(data, (1, len(data)))
 
+def choose_training(images, labels):
+    k = np.array([1, 3, 5, 7, 2, 0, 13, 15, 17, 4])
+    i = images[k]
+    l = labels[k]
+
+    return k, i, l
+
+def choose_test(images, labels):
+    k = np.array([200, 201, 202, 203])
+    i = images[k]
+    l = labels[k]
+
+    return k, i, l
+
