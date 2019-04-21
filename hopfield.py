@@ -28,10 +28,13 @@ class hopfield(object):
         self.processed_data = self.process(self.test_data, theta, nprocess)
 
     def train(self, train_data):
-        w = np.zeros(np.shape(train_data)[1])
+        i = np.shape(train_data)[1]
+        w = np.zeros((i,i))
         for img in train_data:
             this_w = self._create_weight_(img)
             w = np.add(w, this_w)
+        w = w/len(train_data)
+        print(np.shape(w))
         return w
 
     def process(self, test_data, theta, nprocess):
@@ -121,7 +124,7 @@ if __name__ == '__main__':
         plt.savefig('images/train_'+str(i)+'.png')
         plt.close()
 
-    h = hopfield(train_images, test_images, theta=0.5, nprocess=5000)
+    h = hopfield(train_images[[1,3,4]], test_images, theta=0.5, nprocess=5000)
 
     for i in range(len(test_keys)):
         test_img = np.reshape(test_images[i], (28,28))
