@@ -4,7 +4,7 @@ from mnist import MNIST
 import matplotlib.pyplot as plt
 
 class hopfield(object):
-    def __init__(self, train_data, test_data, theta=0.5, nprocess=1000):
+    def __init__(self, train_data, test_data, theta=0.5, nprocess=1000, storkey=False):
         """Simple Hopfield neural network.
 
         Takes in training data and test data 
@@ -24,17 +24,41 @@ class hopfield(object):
         self.train_data, self.test_data = train_data, test_data
         self._check_input_data_()
 
-        self.w = self.train(self.train_data)
+        self.w = self.train(self.train_data, storkey=storkey)
+        print(self.w[:10][:10])
         self.processed_data = self.process(self.test_data, theta, nprocess)
 
-    def train(self, train_data):
+    def train(self, train_data, storkey=False):
+        if storkey:
+            return self._train_storkey_(train_data)
+
         i = np.shape(train_data)[1]
+        npix = i**2
         w = np.zeros((i,i))
         for img in train_data:
             this_w = self._create_weight_(img)
             w = np.add(w, this_w)
-        w = w/len(train_data)
+        # w = w/len(train_data)
+        w = w/npix
         print(np.shape(w))
+        return w
+
+    def _train_storkey_(self, train_data):
+        l = np.shape(train_data)[1]
+        w = np.zeros((l,l))
+
+        for img in train_data:
+            h = np.matmul(w, img)
+            for i in range(len(img)):
+                for j in range(len(img)):
+                    if i != j:
+                        w[i][j] += img[i]*img[j]
+                        w[i][j] -= img[i]*h[j]
+                        w[i][j] -= h[i]*img[j]
+
+        w = w/l**2
+        w = w/len(train_data)
+        np.fill_diagonal(w, 0)
         return w
 
     def process(self, test_data, theta, nprocess):
