@@ -43,6 +43,17 @@ class hopfield(object):
         print(np.shape(w))
         return w
 
+    def _create_weight_(self, img):
+        """Create weight matrix from image. 
+
+        Args:
+            img (:obj:`list` of :obj:`float`): The img of which to make a weight
+                matrix. img must be a 1D numpy array
+        """
+        w = np.outer(img, img)
+        np.fill_diagonal(w, 0)
+        return w
+
     def _train_storkey_(self, train_data):
         l = np.shape(train_data)[1]
         w = np.zeros((l,l))
@@ -92,17 +103,6 @@ class hopfield(object):
 
     def energy(self, img, theta):
         return -0.5 * img @ self.w @ img + np.sum(img * theta)
-
-    def _create_weight_(self, img):
-        """Create weight matrix from image. 
-
-        Args:
-            img (:obj:`list` of :obj:`float`): The img of which to make a weight
-                matrix. img must be a 1D numpy array
-        """
-        w = np.outer(img, img)
-        np.fill_diagonal(w, 0)
-        return w
 
     def _check_input_data_(self):
         for data in [self.train_data, self.test_data]:
