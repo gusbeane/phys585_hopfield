@@ -69,15 +69,29 @@ class hopfield(object):
         return processed_data
 
     def _process_one_image_(self, img, theta, nprocess):
-        n = len(img)
-        for _ in range(nprocess):
-            i = np.random.randint(0, n-1)
-            u = np.dot(self.w[i][:], img) - theta
-            if u > 0:
-                img[i] = 1
-            else:
-                img[i] = -1
-        return img
+        myimg = np.copy(img)
+        n = len(myimg)
+        u_list = []
+        e_old = self.energy(myimg, theta)
+        print('new e:', e_old)
+        for _ in range(round(nprocess/100)):
+            for z in range(100):
+                i = np.random.randint(0, n-1)
+                u = np.dot(self.w[i][:], myimg) - theta
+                myimg[i] = np.sign(u)
+            e = self.energy(myimg, theta)
+            print(e)
+            if e == e_old:
+                return myimg
+            # u_list.append(u)
+            # if u > 0:
+            #     img[i] = 1
+            # else:
+            #     img[i] = -1
+        return myimg
+
+    def energy(self, img, theta):
+        return -0.5 * img @ self.w @ img + np.sum(img * theta)
 
     def _create_weight_(self, img):
         """Create weight matrix from image. 
