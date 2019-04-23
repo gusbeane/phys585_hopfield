@@ -145,6 +145,8 @@ if __name__ == '__main__':
     train_keys, train_images, train_labels = choose_training(images, labels)
     test_keys, test_images, test_labels = choose_test(images, labels)
 
+    # train_images = np.random.rand(*np.shape(train_images))*255
+
     train_images = massage_images(train_images)
     test_images = massage_images(test_images)
 
@@ -162,7 +164,16 @@ if __name__ == '__main__':
         plt.savefig('images/train_'+str(i)+'.png')
         plt.close()
 
-    h = hopfield(train_images[[1,3,4]], test_images, theta=0.5, nprocess=5000)
+    h = hopfield(train_images[[1,3,8]], test_images, theta=0, nprocess=5000, storkey=False)
+
+    retrain_img = h.process(train_images, 0, 5000)
+
+    for i in range(len(retrain_img)):
+        img = np.reshape(retrain_img[i], (28,28))
+
+        plt.imshow(img)
+        plt.savefig('images/retrain_'+str(i)+'.png')
+        plt.close()
 
     for i in range(len(test_keys)):
         test_img = np.reshape(test_images[i], (28,28))
