@@ -5,7 +5,7 @@ from hopfield import hopfield, choose_training, choose_test, massage_images
 
 if __name__ == '__main__':
 
-    n = 100
+    n = 28
 
     img1 = np.full((n,n), -1)
     np.fill_diagonal(img1, 1)
@@ -21,7 +21,7 @@ if __name__ == '__main__':
     img2 = np.reshape(img2, (n**2,))
     img3 = np.reshape(img3, (n**2,))
 
-    train_images = np.array([img1, img2, img3])
+    train_images = np.array([img1, img2])
     test_images = np.copy(train_images)
 
     for i in range(len(test_images)):
