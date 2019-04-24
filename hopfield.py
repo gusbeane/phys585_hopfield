@@ -81,22 +81,16 @@ class hopfield(object):
     def _process_one_image_(self, img, theta, nprocess):
         myimg = np.copy(img)
         n = len(myimg)
-        u_list = []
+ 
         e_old = self.energy(myimg, theta)
+
         print('new e:', e_old)
-        for _ in range(round(nprocess/100)):
-            for z in range(100):
-                i = np.random.randint(n)
-                u = np.dot(self.w[i][:], myimg) - theta
-                myimg[i] = np.sign(u)
-            e = self.energy(myimg, theta)
-            if e == e_old:
-                return myimg
-            # u_list.append(u)
-            # if u > 0:
-            #     img[i] = 1
-            # else:
-            #     img[i] = -1
+
+        for _ in range(nprocess):
+            i = np.random.randint(n)
+            u = np.dot(self.w[i][:], myimg) - theta
+            myimg[i] = np.sign(u)
+
         return myimg
 
     def energy(self, img, theta):
