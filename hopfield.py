@@ -90,7 +90,6 @@ class hopfield(object):
                 u = np.dot(self.w[i][:], myimg) - theta
                 myimg[i] = np.sign(u)
             e = self.energy(myimg, theta)
-            print(e)
             if e == e_old:
                 return myimg
             # u_list.append(u)
