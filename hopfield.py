@@ -1,7 +1,4 @@
 import numpy as np
-from mnist import MNIST
-
-import matplotlib.pyplot as plt
 
 class hopfield(object):
     def __init__(self, train_data, test_data, theta=0.5, nprocess=1000, storkey=False):

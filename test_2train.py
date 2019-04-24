@@ -2,6 +2,7 @@ import numpy as np
 from mnist import MNIST
 
 import matplotlib.pyplot as plt
+from hopfield import hopfield
 
 if __name__ == '__main__':
     mndata = MNIST('samples')
