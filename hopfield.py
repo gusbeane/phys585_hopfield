@@ -33,23 +33,21 @@ class hopfield(object):
 
         w = np.zeros((num_neuron, num_neuron))
 
-        rho = np.sum([np.sum(t) for t in train_data]) / (num_data*num_neuron)
-
         for img in train_data:
-            this_w = self._create_weight_(img, rho)
+            this_w = self._create_weight_(img)
             w = np.add(w, this_w)
 
         w = w / num_data
         return w
 
-    def _create_weight_(self, img, rho):
+    def _create_weight_(self, img):
         """Create weight matrix from image. 
 
         Args:
             img (:obj:`list` of :obj:`float`): The img of which to make a weight
                 matrix. img must be a 1D numpy array
         """
-        w = np.outer(img-rho, img-rho)
+        w = np.outer(img, img)
         np.fill_diagonal(w, 0)
         return w
 
