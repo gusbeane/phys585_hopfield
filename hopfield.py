@@ -32,25 +32,27 @@ class hopfield(object):
         if storkey:
             return self._train_storkey_(train_data)
 
-        i = np.shape(train_data)[1]
-        npix = i**2
-        w = np.zeros((i,i))
+        num_data, num_neuron = np.shape(train_data)
+
+        w = np.zeros((num_neuron, num_neuron))
+
+        rho = np.sum([np.sum(t) for t in train_data]) / (num_data*num_neuron)
+
         for img in train_data:
-            this_w = self._create_weight_(img)
+            this_w = self._create_weight_(img, rho)
             w = np.add(w, this_w)
-        # w = w/len(train_data)
-        w = w/npix
-        print(np.shape(w))
+
+        w = w / num_data
         return w
 
-    def _create_weight_(self, img):
+    def _create_weight_(self, img, rho):
         """Create weight matrix from image. 
 
         Args:
             img (:obj:`list` of :obj:`float`): The img of which to make a weight
                 matrix. img must be a 1D numpy array
         """
-        w = np.outer(img, img)
+        w = np.outer(img-rho, img-rho)
         np.fill_diagonal(w, 0)
         return w
 
@@ -87,7 +89,7 @@ class hopfield(object):
         print('new e:', e_old)
         for _ in range(round(nprocess/100)):
             for z in range(100):
-                i = np.random.randint(0, n-1)
+                i = np.random.randint(n)
                 u = np.dot(self.w[i][:], myimg) - theta
                 myimg[i] = np.sign(u)
             e = self.energy(myimg, theta)
