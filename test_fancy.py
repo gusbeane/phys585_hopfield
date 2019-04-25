@@ -37,6 +37,18 @@ if __name__ == '__main__':
     train_images = np.array(data)
     test_images = np.copy(train_images)
 
+    # randomly flip 20% of pixels
+    for i in range(len(test_images)):
+        img = test_images[i]
+
+        nreplace = round(0.2*len(img))
+
+        k = np.random.choice(list(range(len(img))), nreplace, replace=False)
+        
+        to_replace = np.random.randint(2, size=nreplace)
+        to_replace = 2*to_replace - 1
+        img[k] = to_replace
+
     for i in range(len(test_images)):
         test_img = np.reshape(test_images[i], (128,128))
 
@@ -51,7 +63,7 @@ if __name__ == '__main__':
         plt.savefig('images_fancy/train_'+str(i)+'.png')
         plt.close()
 
-    h = hopfield(train_images, test_images, theta=0, nprocess=5000, storkey=False)
+    h = hopfield(train_images, test_images, theta=0, nprocess=200000, storkey=False)
 
     retrain_img = h.process(train_images, 0, 5000)
 
