@@ -1,4 +1,5 @@
 import numpy as np
+from tqdm import tqdm
 
 class hopfield(object):
     def __init__(self, train_data, test_data, theta=0.5, nprocess=1000, storkey=False):
@@ -76,7 +77,7 @@ class hopfield(object):
             processed_data.append(new_img)
         return processed_data
 
-    def _process_one_image_(self, img, theta, nprocess):
+    def _process_one_image_(self, img, theta, nprocess, return_energy=False):
         myimg = np.copy(img)
         n = len(myimg)
  
@@ -84,15 +85,25 @@ class hopfield(object):
 
         print('new e:', e_old)
 
-        for _ in range(nprocess):
+        elist = np.zeros(nprocess)
+        for j in tqdm(range(nprocess)):
             i = np.random.randint(n)
             u = np.dot(self.w[i][:], myimg) - theta
             myimg[i] = np.sign(u)
+            if return_energy:
+                e = self.energy(myimg, theta)
+                elist[j] = e
+        elist = np.array(elist)
+        tlist = np.array(list(range(nprocess)))
 
-        return myimg
+        if return_energy:
+            return myimg, tlist, elist
+        else:
+            return myimg
 
     def energy(self, img, theta):
-        return -0.5 * img @ self.w @ img + np.sum(img * theta)
+        # return -0.5 * img @ self.w @ img + np.sum(img * theta)
+        return -0.5 * np.matmul(np.matmul(img, self.w), img) + np.sum(img * theta)
 
     def _check_input_data_(self):
         for data in [self.train_data, self.test_data]:
