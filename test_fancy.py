@@ -41,7 +41,7 @@ if __name__ == '__main__':
     for i in range(len(test_images)):
         img = test_images[i]
 
-        nreplace = round(0.2*len(img))
+        nreplace = round(0.4*len(img))
 
         k = np.random.choice(list(range(len(img))), nreplace, replace=False)
         
