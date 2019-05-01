@@ -24,7 +24,7 @@ class hopfield(object):
         self._check_input_data_()
 
         self.w = self.train(self.train_data, storkey=storkey, pseudoinverse=pseudoinverse)
-        print(self.w[:10][:10])
+        
         self.processed_data = self.process(self.test_data, theta, nprocess)
 
     def train(self, train_data, storkey=False, pseudoinverse=False):
@@ -94,10 +94,8 @@ class hopfield(object):
  
         e_old = self.energy(myimg, theta)
 
-        print('new e:', e_old)
-
         elist = np.zeros(nprocess)
-        for j in tqdm(range(nprocess)):
+        for j in range(nprocess):
             i = np.random.randint(n)
             u = np.dot(self.w[i][:], myimg) - theta
             myimg[i] = np.sign(u)
