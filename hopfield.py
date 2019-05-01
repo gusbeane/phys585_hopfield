@@ -2,7 +2,8 @@ import numpy as np
 from tqdm import tqdm
 
 class hopfield(object):
-    def __init__(self, train_data, test_data, theta=0.5, nprocess=1000, storkey=False):
+    def __init__(self, train_data, test_data, theta=0.5, nprocess=1000, 
+                       storkey=False, pseudoinverse=False):
         """Simple Hopfield neural network.
 
         Takes in training data and test data 
@@ -22,13 +23,15 @@ class hopfield(object):
         self.train_data, self.test_data = train_data, test_data
         self._check_input_data_()
 
-        self.w = self.train(self.train_data, storkey=storkey)
+        self.w = self.train(self.train_data, storkey=storkey, pseudoinverse=pseudoinverse)
         print(self.w[:10][:10])
         self.processed_data = self.process(self.test_data, theta, nprocess)
 
-    def train(self, train_data, storkey=False):
+    def train(self, train_data, storkey=False, pseudoinverse=False):
         if storkey:
             return self._train_storkey_(train_data)
+        if pseudoinverse:
+            return self._train_pseudo_inverse_(train_data)
 
         num_data, num_neuron = np.shape(train_data)
 
@@ -49,6 +52,14 @@ class hopfield(object):
                 matrix. img must be a 1D numpy array
         """
         w = np.outer(img, img)
+        np.fill_diagonal(w, 0)
+        return w
+
+    def _train_pseudo_inverse_(self, train_data):
+        xsi = np.transpose(train_data)
+        pinv = np.linalg.pinv(xsi)
+        w = np.matmul(xsi, pinv)
+
         np.fill_diagonal(w, 0)
         return w
 
