@@ -45,17 +45,16 @@ if __name__ == '__main__':
     # first do hebbian
     Ntrain_list = np.arange(2, 10)
     z = np.zeros(np.shape(Ntrain_list))
-    to_plot = np.transpose([Ntrain_list, z, z])
+    to_plot = np.transpose([Ntrain_list, z, z, z, z])
 
     train_keys_to_choose = list(range(len(train_images)))
 
     for Ndx, Ntrain in enumerate(Ntrain_list):
-        d = 0
+        dhebb = []
+        dpinv = []
         for _ in tqdm(range(20)):
             ktrain = np.random.choice(train_keys_to_choose, size=Ntrain, replace=False)
             ktest = np.where(np.isin(test_labels, train_labels[ktrain]))[0]
-
-            d += len(ktest)
 
             h_hebb = hopfield(train_images[ktrain], test_images[ktest], theta=0, nprocess=2500)
             h_pinv = hopfield(train_images[ktrain], test_images[ktest], theta=0, nprocess=2500, pseudoinverse=True)
@@ -68,16 +67,32 @@ if __name__ == '__main__':
 
             for proc_img_hebb, proc_img_pinv, train_img in zip(proc_hebb, proc_pinv, corresponding_train):
                 hd = hamming_normalized(proc_img_hebb, train_img)
-                to_plot[Ndx][1] += hd
+                dhebb.append(hd)
                 hd = hamming_normalized(proc_img_pinv, train_img)
-                to_plot[Ndx][2] += hd
+                dpinv.append(hd)
 
-        to_plot[Ndx][1] /= d
-        to_plot[Ndx][2] /= d
+        meanhebb = np.average(dhebb)
+        meanpinv = np.average(dpinv)
+
+        sehebb = np.std(dhebb)/np.sqrt(len(dhebb))
+        sepinv = np.std(dpinv)/np.sqrt(len(dpinv))
+
+        to_plot[Ndx][1] = meanhebb
+        to_plot[Ndx][2] = sehebb
+        to_plot[Ndx][3] = meanpinv
+        to_plot[Ndx][4] = sepinv
 
     fig, ax = plt.subplots(1, 1)
-    ax.plot(to_plot[:,0], to_plot[:,1], label='hebbian')
-    ax.plot(to_plot[:,0], to_plot[:,2], label='pseudo inverse')
+    ax.plot(to_plot[:,0], to_plot[:,1], label='hebbian', c='blue')
+    ax.plot(to_plot[:,0], to_plot[:,3], label='pseudo inverse', c='red')
+
+    ax.plot(to_plot[:,0], to_plot[:,1] + to_plot[:,2], c='blue', ls='dashed')
+    ax.plot(to_plot[:,0], to_plot[:,1] - to_plot[:,2], c='blue', ls='dashed')
+    ax.plot(to_plot[:,0], to_plot[:,3] + to_plot[:,4], c='red', ls='dashed')
+    ax.plot(to_plot[:,0], to_plot[:,3] - to_plot[:,4], c='red', ls='dashed')
+
+    ax.fill_between(to_plot[:,0], to_plot[:,1] + to_plot[:,2], to_plot[:,1] - to_plot[:,2], color='blue', alpha=0.2)
+    ax.fill_between(to_plot[:,0], to_plot[:,3] + to_plot[:,4], to_plot[:,3] - to_plot[:,4], color='red', alpha=0.2)
 
     ax.set_xlabel('N train')
     ax.set_ylabel('average normalized hamming distance')
