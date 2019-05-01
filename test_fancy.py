@@ -24,11 +24,15 @@ if __name__ == '__main__':
 
     camera = skimage.data.camera()
     astronaut = rgb2gray(skimage.data.astronaut())
-    horse = skimage.data.horse()
     coffee = rgb2gray(skimage.data.coffee())
+    moon = skimage.data.moon()
+    an = skimage.data.microaneurysms()
+    hdf = rgb2gray(skimage.data.hubble_deep_field())
+    pg = skimage.data.page()
+    rocket = rgb2gray(skimage.data.rocket())
 
     # Marge data
-    data = [camera, astronaut, horse, coffee]
+    data = [camera, astronaut, coffee, moon]
 
     # Preprocessing
     print("Start to data preprocessing...")
