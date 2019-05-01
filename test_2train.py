@@ -55,3 +55,11 @@ if __name__ == '__main__':
         plt.imshow(proc_img)
         plt.savefig('images_2train/proc_'+str(i)+'.png')
         plt.close()
+
+    img, tlist, elist = h._process_one_image_(test_images[0], theta=0, nprocess=5000, return_energy=True)
+
+    plt.plot(tlist, elist)
+    plt.xlabel('iteration')
+    plt.ylabel('energy')
+    plt.tight_layout()
+    plt.savefig('images_2train/proc_0_energy_vs_t.png')
